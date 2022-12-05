@@ -7,7 +7,11 @@ Scope app to show a record in a list of steps through form views.
 
 ## Features
 
-- Data Model supporting the definition of a step record from a form view defined on the choosen main record table.
+- Data Model supporting the definition of a step through form view definition for the choosen main record table.
 - Vertical progress steps tracker.
 - Saving changes applied on the form through steps navigation and submit.
 - Widget option to make the form read only.
+
+## Additional info
+- The widget relies on the out of the box Widget Form for the back-end, while the SpModel directive is used for the front-end.
+- It is possible to embed custom widgets in a Form View through UI Macros and UI Formatters.
