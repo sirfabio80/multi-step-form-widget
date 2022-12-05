@@ -55,16 +55,13 @@
     };
 
     c.submit = function() {
-
         if (c.formModified) {
             c.save();
         }
-
         $timeout(function() {
             $location.url(c.options.submit_url);
         }, 500);
-
-    }
+    };
 
     c.loadWidget = function(stepNumber) {
         c.options.form_widget_options.view = c.data.form_steps[stepNumber].form_view;
@@ -246,14 +243,14 @@
         <sys_created_by>fabio.petito</sys_created_by>
         <sys_created_on>2022-11-30 14:22:47</sys_created_on>
         <sys_id>6db28ae0c3eb99503115fe94e401313e</sys_id>
-        <sys_mod_count>255</sys_mod_count>
+        <sys_mod_count>256</sys_mod_count>
         <sys_name>Multi Step Form</sys_name>
         <sys_package display_value="Multi Step Form" source="x_snc_mp_form">56b491184723d9502a8e8762e36d43c9</sys_package>
         <sys_policy/>
         <sys_scope display_value="Multi Step Form">56b491184723d9502a8e8762e36d43c9</sys_scope>
         <sys_update_name>sp_widget_6db28ae0c3eb99503115fe94e401313e</sys_update_name>
         <sys_updated_by>fabio.petito</sys_updated_by>
-        <sys_updated_on>2022-12-05 11:58:53</sys_updated_on>
+        <sys_updated_on>2022-12-05 12:07:29</sys_updated_on>
         <template><![CDATA[<sp-panel class="x-snc-mp-form">
   <p ng-if="c.options.short_description">{{::c.options.short_description}}</p>
   <div class="row">
