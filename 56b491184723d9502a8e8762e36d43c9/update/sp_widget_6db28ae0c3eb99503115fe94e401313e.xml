@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function(spUtil, $scope, $rootScope, $timeout) {
+        <client_script><![CDATA[api.controller = function(spUtil, $scope, $rootScope, $timeout, $location) {
     var c = this;
     c.gFormInstance = {};
 
@@ -54,6 +54,18 @@
         c.loadWidget(c.current);
     };
 
+    c.submit = function() {
+
+        if (c.formModified) {
+            c.save();
+        }
+
+        $timeout(function() {
+            $location.url(c.options.submit_url);
+        }, 500);
+
+    }
+
     c.loadWidget = function(stepNumber) {
         c.options.form_widget_options.view = c.data.form_steps[stepNumber].form_view;
 
@@ -87,103 +99,104 @@
     $rootScope.$on('field.change', function(evt, fieldData) {
         c.formModified = true;
     });
+
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css>.form__container {&#13;
-  a.btn {&#13;
-    min-width: 160px;&#13;
-  }&#13;
-  .container-caption.form-container-caption {&#13;
-    display: none;&#13;
-  }&#13;
-}&#13;
-&#13;
-.loader {&#13;
-  border: 12px solid $gray-lighter;&#13;
-  border-top: 12px solid $brand-primary;&#13;
-  border-radius: 50%;&#13;
-  width: 80px;&#13;
-  height: 80px;&#13;
-  animation: spin 2s linear infinite;&#13;
-  position: absolute;&#13;
-  top: 35%;&#13;
-  left: 43%;&#13;
-  z-index: 1;&#13;
-}&#13;
-&#13;
-.form-step-icons__container {&#13;
-  position: relative;&#13;
-}&#13;
-&#13;
-.step-line {&#13;
-  position: absolute;&#13;
-  top: 20px;&#13;
-  bottom: 0px;&#13;
-  left: calc(50% - 0.5px);&#13;
-  width: 1px;&#13;
-  background-color: $gray-lighter;&#13;
-  z-index: 1;&#13;
-}&#13;
-&#13;
-.form-steps__container&gt;li:last-child .step-line {&#13;
-  display: none;&#13;
-}&#13;
-&#13;
-.form-step__container {&#13;
-  display: flex;&#13;
-  grid-column-gap: 10px;&#13;
-}&#13;
-&#13;
-.step-badge {&#13;
-  height: 20px;&#13;
-  width: 20px;&#13;
-  border-radius: 50%;&#13;
-  text-align: center;&#13;
-  font-size: 14px;&#13;
-  line-height: 15px;&#13;
-}&#13;
-&#13;
-.step-badge--active {&#13;
-  color: $brand-primary;&#13;
-  border: 2px solid $brand-primary;&#13;
-  background-color: white;&#13;
-}&#13;
-&#13;
-.step-badge--past {&#13;
-  color: $gray-light;&#13;
-  border: 2px solid $gray-lighter;&#13;
-  background-color: $gray-lighter;&#13;
-}&#13;
-&#13;
-.step-badge--future {&#13;
-  color: white;&#13;
-  border: 2px solid $gray-lighter;&#13;
-  background-color: white;&#13;
-}&#13;
-&#13;
-&#13;
-@keyframes spin {&#13;
-  0% {&#13;
-    transform: rotate(0deg);&#13;
-  }&#13;
-&#13;
-  100% {&#13;
-    transform: rotate(360deg);&#13;
-  }&#13;
-}&#13;
-&#13;
-.fade {&#13;
-  transition: all linear 0.3s;&#13;
-  opacity: 1;&#13;
-}&#13;
-&#13;
-.fade.ng-hide {&#13;
-  opacity: 0;&#13;
-}&#13;
-&#13;
-.ng-hide {&#13;
-  opacity: 0;&#13;
-  transition: none 0;&#13;
+        <css>.form__container {
+  a.btn {
+    min-width: 160px;
+  }
+  .container-caption.form-container-caption {
+    display: none;
+  }
+}
+
+.loader {
+  border: 12px solid $gray-lighter;
+  border-top: 12px solid $brand-primary;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 35%;
+  left: 43%;
+  z-index: 1;
+}
+
+.form-step-icons__container {
+  position: relative;
+}
+
+.step-line {
+  position: absolute;
+  top: 20px;
+  bottom: 0px;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  background-color: $gray-lighter;
+  z-index: 1;
+}
+
+.form-steps__container&gt;li:last-child .step-line {
+  display: none;
+}
+
+.form-step__container {
+  display: flex;
+  grid-column-gap: 10px;
+}
+
+.step-badge {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.step-badge--active {
+  color: $brand-primary;
+  border: 2px solid $brand-primary;
+  background-color: white;
+}
+
+.step-badge--past {
+  color: $gray-lighter;
+  border: 2px solid $gray-lighter;
+  background-color: $gray-lighter;
+}
+
+.step-badge--future {
+  color: white;
+  border: 2px solid $gray-lighter;
+  background-color: white;
+}
+
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fade {
+  transition: all linear 0.3s;
+  opacity: 1;
+}
+
+.fade.ng-hide {
+  opacity: 0;
+}
+
+.ng-hide {
+  opacity: 0;
+  transition: none 0;
 }</css>
         <data_table>sp_instance_table</data_table>
         <demo_data/>
@@ -233,19 +246,18 @@
         <sys_created_by>fabio.petito</sys_created_by>
         <sys_created_on>2022-11-30 14:22:47</sys_created_on>
         <sys_id>6db28ae0c3eb99503115fe94e401313e</sys_id>
-        <sys_mod_count>251</sys_mod_count>
+        <sys_mod_count>255</sys_mod_count>
         <sys_name>Multi Step Form</sys_name>
         <sys_package display_value="Multi Step Form" source="x_snc_mp_form">56b491184723d9502a8e8762e36d43c9</sys_package>
         <sys_policy/>
         <sys_scope display_value="Multi Step Form">56b491184723d9502a8e8762e36d43c9</sys_scope>
         <sys_update_name>sp_widget_6db28ae0c3eb99503115fe94e401313e</sys_update_name>
         <sys_updated_by>fabio.petito</sys_updated_by>
-        <sys_updated_on>2022-12-05 11:34:37</sys_updated_on>
+        <sys_updated_on>2022-12-05 11:58:53</sys_updated_on>
         <template><![CDATA[<sp-panel class="x-snc-mp-form">
   <p ng-if="c.options.short_description">{{::c.options.short_description}}</p>
   <div class="row">
     <div class="col-sm-3">
-
       <ul class="list-unstyled form-steps__container">
         <li ng-repeat="step in ::c.data.form_steps track by step.sys_id">
           <div class="form-step__container">
@@ -260,7 +272,6 @@
           </div>
         </li>
       </ul>
-
     </div>
     <div class="col-sm-9 form__container">
       <div class="widget-form__container">
@@ -275,7 +286,7 @@
         <a class="btn btn-default m-l-sm" ng-disabled="c.isFirst()" ng-href role="button"
           ng-click="c.previous()">${Previous}</a>
         <a class="btn btn-primary m-l-sm" ng-hide="c.isLast()" ng-href role="button" ng-click="c.next()">${Next}</a>
-        <a class="btn btn-primary m-l-sm" ng-show="c.isLast()" ng-href="{{c.options.submit_url}}" role="button">${Submit}</a>
+        <a class="btn btn-primary m-l-sm" ng-show="c.isLast()" ng-href role="button" ng-click="c.submit()">${Submit}</a>
       </div>
     </div>
   </div>
