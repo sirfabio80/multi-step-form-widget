@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_mp_form.Configuration</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Configuration</name>
+        <script><![CDATA[var Configuration = Class.create();
+
+Configuration.TABLE_NAME = 'x_snc_mp_form_x_snc_ms_form_conf';
+
+Configuration.prototype = {
+    initialize: function(gr) {
+        this._gr = gr;
+    },
+    getID: function() {
+        if (!this.isValid())
+            return null;
+
+        return this._gr.getUniqueValue();
+    },
+    toJSON: function() {
+        return {
+            sys_id: this._gr.getUniqueValue(),
+            label: this._gr.getDisplayValue('label'),
+			short_description: this._gr.getDisplayValue('short_description'),
+            table_name: this._gr.getValue('table_name'),
+            form_view: this._gr.getDisplayValue('form_view.name'),
+            order: this._gr.getValue('order')
+        };
+    },
+
+    type: 'Configuration'
+};
+
+Configuration.getRecord = function(sysID) {
+    var gr = new GlideRecord(Configuration.TABLE_NAME);
+    gr.get(sysID);
+    return new Configuration(gr).toJSON();
+};
+
+Configuration.getRecords = function(tableName) {
+    var records = [];
+    var gr = new GlideRecord(Configuration.TABLE_NAME);
+    gr.addQuery('active', true).addCondition('table_name', tableName);
+    gr.setLimit(20);
+    gr.orderBy('order');
+    gr.query();
+    while (gr.next()) {
+        records.push(new Configuration(gr).toJSON());
+    }
+
+    return records;
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>fabio.petito</sys_created_by>
+        <sys_created_on>2022-11-30 12:43:47</sys_created_on>
+        <sys_id>00412d6cc3e799503115fe94e40131c6</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>Configuration</sys_name>
+        <sys_package display_value="Multi Step Form" source="x_snc_mp_form">56b491184723d9502a8e8762e36d43c9</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Multi Step Form">56b491184723d9502a8e8762e36d43c9</sys_scope>
+        <sys_update_name>sys_script_include_00412d6cc3e799503115fe94e40131c6</sys_update_name>
+        <sys_updated_by>fabio.petito</sys_updated_by>
+        <sys_updated_on>2022-12-05 10:01:24</sys_updated_on>
+    </sys_script_include>
+</record_update>

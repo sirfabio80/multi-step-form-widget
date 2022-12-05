@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function(spUtil, $scope, $rootScope, $timeout) {
+    var c = this;
+    c.gFormInstance = {};
+
+    c.$onInit = function() {
+        c.gFormInstance = {};
+        c.formWidget = {};
+        c.current = 0;
+        c.formModified = false;
+        c.show = true;
+    };
+
+    c.isFirst = function() {
+        return c.current == 0;
+    };
+
+    c.isLast = function() {
+        return c.current == (c.data.form_steps.length - 1);
+    };
+
+    c.getStepState = function(pos) {
+        var stepObj = c.data.form_steps[pos];
+        if (pos > c.current)
+            return 'future';
+        else if (pos == c.current)
+            return 'active';
+        else if (pos < c.current)
+            return 'past';
+    };
+
+    c.save = function() {
+        c.gFormInstance.save();
+        c.data.form_widget = angular.copy({});
+    };
+
+    c.previous = function() {
+        c.show = false;
+        c.current--;
+        if (c.formModified) {
+            c.save();
+        }
+        c.loadWidget(c.current);
+    };
+
+    c.next = function() {
+        c.show = false;
+        c.current++;
+        if (c.formModified) {
+            c.save();
+        }
+        c.loadWidget(c.current);
+    };
+
+    c.loadWidget = function(stepNumber) {
+        c.options.form_widget_options.view = c.data.form_steps[stepNumber].form_view;
+
+        spUtil.get('widget-form', c.options.form_widget_options).then(function(response) {
+            c.data.form_widget = angular.copy({});
+            c.data.form_widget = angular.copy(response);
+            c.formModified = false;
+            c.show = true;
+        });
+
+    };
+
+    $rootScope.$on('spModel.gForm.initialized', function(e, gFormInstance) {
+        c.gFormInstance = angular.copy({});
+        c.gFormInstance = angular.copy(gFormInstance);
+        if (c.options.read_only) {
+            var fields = c.gFormInstance.getFieldNames();
+            fields.forEach(function(field) {
+                c.gFormInstance.setReadOnly(field, true);
+            });
+        }
+    });
+
+    $rootScope.$on('spModel.fields.rendered', function(e, gFormInstance) {
+        c.resetHeight();
+        $timeout(function() {
+            c.getHeight();
+        }, 1000);
+    });
+
+    $rootScope.$on('field.change', function(evt, fieldData) {
+        c.formModified = true;
+    });
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.form__container {&#13;
+  a.btn {&#13;
+    min-width: 160px;&#13;
+  }&#13;
+  .container-caption.form-container-caption {&#13;
+    display: none;&#13;
+  }&#13;
+}&#13;
+&#13;
+.loader {&#13;
+  border: 12px solid $gray-lighter;&#13;
+  border-top: 12px solid $brand-primary;&#13;
+  border-radius: 50%;&#13;
+  width: 80px;&#13;
+  height: 80px;&#13;
+  animation: spin 2s linear infinite;&#13;
+  position: absolute;&#13;
+  top: 35%;&#13;
+  left: 43%;&#13;
+  z-index: 1;&#13;
+}&#13;
+&#13;
+.form-step-icons__container {&#13;
+  position: relative;&#13;
+}&#13;
+&#13;
+.step-line {&#13;
+  position: absolute;&#13;
+  top: 20px;&#13;
+  bottom: 0px;&#13;
+  left: calc(50% - 0.5px);&#13;
+  width: 1px;&#13;
+  background-color: $gray-lighter;&#13;
+  z-index: 1;&#13;
+}&#13;
+&#13;
+.form-steps__container&gt;li:last-child .step-line {&#13;
+  display: none;&#13;
+}&#13;
+&#13;
+.form-step__container {&#13;
+  display: flex;&#13;
+  grid-column-gap: 10px;&#13;
+}&#13;
+&#13;
+.step-badge {&#13;
+  height: 20px;&#13;
+  width: 20px;&#13;
+  border-radius: 50%;&#13;
+  text-align: center;&#13;
+  font-size: 14px;&#13;
+  line-height: 15px;&#13;
+}&#13;
+&#13;
+.step-badge--active {&#13;
+  color: $brand-primary;&#13;
+  border: 2px solid $brand-primary;&#13;
+  background-color: white;&#13;
+}&#13;
+&#13;
+.step-badge--past {&#13;
+  color: $gray-light;&#13;
+  border: 2px solid $gray-light;&#13;
+  background-color: $gray-light;&#13;
+}&#13;
+&#13;
+.step-badge--future {&#13;
+  color: white;&#13;
+  border: 2px solid $gray-lighter;&#13;
+  background-color: white;&#13;
+}&#13;
+&#13;
+&#13;
+@keyframes spin {&#13;
+  0% {&#13;
+    transform: rotate(0deg);&#13;
+  }&#13;
+&#13;
+  100% {&#13;
+    transform: rotate(360deg);&#13;
+  }&#13;
+}&#13;
+&#13;
+.fade {&#13;
+  transition: all linear 0.3s;&#13;
+  opacity: 1;&#13;
+}&#13;
+&#13;
+.fade.ng-hide {&#13;
+  opacity: 0;&#13;
+}&#13;
+&#13;
+.ng-hide {&#13;
+  opacity: 0;&#13;
+  transition: none 0;&#13;
+}</css>
+        <data_table>sp_instance_table</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,short_description,table,color</field_list>
+        <has_preview>false</has_preview>
+        <id>x-snc-mp-form</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+    var c = controller;
+
+    c.getHeight = function() {
+        var formContainerHeight = $('.widget-form__container').height();
+        $('.widget-form__container').css('height', formContainerHeight + 'px');
+    };
+    c.resetHeight = function() {
+        $('.widget-form__container').css('height', '');
+    };
+}]]></link>
+        <name>Multi Step Form</name>
+        <option_schema>[{"name":"read_only","section":"other","default_value":"false","label":"Read Only","type":"boolean"},{"name":"submit_url","section":"other","default_value":"/sp","label":"Submit URL","type":"string"}]</option_schema>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    input = input || {};
+
+    data.sys_id = input.sys_id || $sp.getParameter('sys_id');
+    options.table = $sp.getParameter('table') || options.table;
+    options.read_only = options.read_only == true || options.read_only == '';
+    data.form_steps = x_snc_mp_form.Configuration.getRecords(options.table);
+    data.form_widget = {};
+
+    if (!options.table || !data.sys_id || data.form_steps.length == 0)
+        return;
+
+    options.form_widget_options = {};
+    options.form_widget_options.table = options.table;
+    options.form_widget_options.sys_id = data.sys_id;
+    options.form_widget_options.view = data.form_steps[0].form_view;
+
+    data.form_widget = $sp.getWidget('widget-form', options.form_widget_options);
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>fabio.petito</sys_created_by>
+        <sys_created_on>2022-11-30 14:22:47</sys_created_on>
+        <sys_id>6db28ae0c3eb99503115fe94e401313e</sys_id>
+        <sys_mod_count>250</sys_mod_count>
+        <sys_name>Multi Step Form</sys_name>
+        <sys_package display_value="Multi Step Form" source="x_snc_mp_form">56b491184723d9502a8e8762e36d43c9</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Multi Step Form">56b491184723d9502a8e8762e36d43c9</sys_scope>
+        <sys_update_name>sp_widget_6db28ae0c3eb99503115fe94e401313e</sys_update_name>
+        <sys_updated_by>fabio.petito</sys_updated_by>
+        <sys_updated_on>2022-12-05 11:19:55</sys_updated_on>
+        <template><![CDATA[<sp-panel class="x-snc-mp-form">
+  <p ng-if="c.options.short_description">{{::c.options.short_description}}</p>
+  <div class="row">
+    <div class="col-sm-3">
+
+      <ul class="list-unstyled form-steps__container">
+        <li ng-repeat="step in ::c.data.form_steps track by step.sys_id">
+          <div class="form-step__container">
+            <div class="form-step-icons__container">
+              <div class="step-badge step-badge--{{c.getStepState($index)}}">{{($index + 1)}}</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="form-step-text__container">
+              <h4 class="m-n">{{::step.label}}</h4>
+              <p>{{::step.short_description}}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+    <div class="col-sm-9 form__container">
+      <div class="widget-form__container">
+        <form class="widget-form fade" ng-show="c.show">
+          <div>
+            <sp-model form_model="c.data.form_widget.data.f" mandatory="mandatory"></sp-model>
+          </div>
+        </form>
+        <div class="loader" ng-hide="c.show"></div>
+      </div>
+      <div class="form__footer text-center">
+        <a class="btn btn-default m-l-sm" ng-disabled="c.isFirst()" ng-href role="button"
+          ng-click="c.previous()">${Previous}</a>
+        <a class="btn btn-primary m-l-sm" ng-hide="c.isLast()" ng-href role="button" ng-click="c.next()">${Next}</a>
+        <a class="btn btn-primary m-l-sm" ng-show="c.isLast()" ng-href="{{c.options.submit_url}}" role="button">${Submit}</a>
+      </div>
+    </div>
+  </div>
+</sp-panel>]]></template>
+    </sp_widget>
+</record_update>

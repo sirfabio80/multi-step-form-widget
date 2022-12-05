@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="66d455584723d9502a8e8762e36d4332" label="Multi Step Form Configuration" max_length="40" name="x_snc_mp_form_x_snc_ms_form_conf" type="collection">
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return '';&#13;&#10;&#9;&#13;&#10;})(current);" choice="1" label="Form View" mandatory="true" max_length="200" name="form_view" reference="sys_ui_view" reference_qual="nameISNOTEMPTY^EQ^ORDERBYDESCsys_updated_on" reference_qual_condition="nameISNOTEMPTY^EQ^ORDERBYDESCsys_updated_on" type="reference" use_dependent_field="true">
+            <choice/>
+        </element>
+        <element label="Label" max_length="40" name="label" type="string"/>
+        <element default="10" label="Order" max_length="40" name="order" type="integer"/>
+        <element label="Short Description" max_length="200" name="short_description" type="string"/>
+        <element attributes="base_start=false" label="Table Name" mandatory="true" max_length="80" name="table_name" type="table_name"/>
+    </element>
+</database>
